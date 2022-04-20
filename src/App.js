@@ -1,7 +1,9 @@
 import React from "react";
-import logo from "./logo.svg";
+// import logo from "./logo.svg";
 import "./App.css";
 import axios from "axios";
+import Highcharts from "highcharts";
+import HighchartsReact from "highcharts-react-official";
 
 function App() {
 	const [data, setData] = React.useState(null);
@@ -27,21 +29,43 @@ function App() {
 			});
 	}, []);
 
+
 	if (!data) return null;
 	if (!all) return null;
 
 	// allには、すべての都道府県とIDが格納 all.result[].prefCode/PrefName
 	// dataには、表示すべきグラフの内容
 	// data.result.data[0]に総人口の推移、その中のdataのyearとvalueあり
-	// const lists = data.result.data[0].data.length;
+	// const lists = data.result.data[0].data;
+	// const lists_demo = [[20, 1]];
+
+	// リストに
+	const lists_demo =  [
+		{
+			name: "test",
+			data: [10,11,12,3,20],
+		},
+	];
+
+	const options = {
+		title: {
+			text: "都道府県別人口数",
+		},
+		plotOptions: {
+			series: {
+				label: {
+					connectorAllowed: false,
+				},
+				pointInterval: 5,
+				pointStart: 1965,
+			},
+		},
+		series: lists_demo,
+	};
 
 	return (
 		<div className="App">
 			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
-				<p>
-					<code>src/App.js</code> and save to reload.
-				</p>
 				{/* <p>{data.result.boundaryYear}</p> */}
 				{data.result.data[0].data.map((element) => {
 					return (
@@ -58,6 +82,7 @@ function App() {
 				<a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
 					Learn React
 				</a>
+				<HighchartsReact highcharts={Highcharts} options={options} />
 			</header>
 		</div>
 	);
