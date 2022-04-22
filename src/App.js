@@ -2,7 +2,7 @@ import React from "react";
 // import logo from "./logo.svg";
 import "./App.css";
 import axios from "axios";
-import Highcharts from "highcharts";
+import Highcharts, { setOptions } from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
 function App() {
@@ -10,6 +10,7 @@ function App() {
 	const [all, setAll] = React.useState(null);
 	const [num, setNum] = React.useState(0);
 	const [series, setSeries] = React.useState([]);
+	// const [options, setOptions] = React.useState();
 
 	React.useEffect(() => {
 		axios
@@ -38,7 +39,6 @@ function App() {
 	for (let i = 0; i < data.result.data[0].data.length; i++) {
 		prefData.push(data.result.data[0].data[i].value);
 	}
-
 	const prefName = all.result[num].prefName;
 	// const series = [];
 	const serie = {
@@ -46,7 +46,7 @@ function App() {
 		data: prefData,
 	};
 	const lists = [...series, serie];
-	// setSeries(lists);
+	// setSeries([...series, serie]);
 	// series.push(serie);
 
 	const options = {
@@ -68,6 +68,12 @@ function App() {
 	return (
 		<div className="App">
 			<header className="App-header">
+				<input
+					type="checkbox"
+					onChange={(event) => {
+						setSeries(lists);
+					}}
+				></input>
 				{series.map((data) => {
 					return <p>{data.name}</p>;
 				})}
@@ -88,7 +94,8 @@ function App() {
 								value="test"
 								onChange={(event) => {
 									setNum(prefecture.prefCode - 1);
-									setSeries(lists);
+									// setseriesが呼ばれるときにはdataが更新されてない
+									// setSeries([...series, serie]);
 								}}
 							></input>
 							<lebel>{prefecture.prefName}</lebel>
