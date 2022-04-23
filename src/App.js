@@ -10,7 +10,9 @@ function App() {
 	const [all, setAll] = React.useState(null);
 	const [num, setNum] = React.useState(0);
 	const [series, setSeries] = React.useState([]);
-	// const [options, setOptions] = React.useState();
+	const [options, setOptions] = React.useState();
+
+	// // if (!num) return null;
 
 	React.useEffect(() => {
 		axios
@@ -32,59 +34,50 @@ function App() {
 			});
 	}, []);
 
-	if (!data) return null;
-	if (!all) return null;
+	// }, []);
 
-	const prefData = [];
+	if (!data) return null;
+
+	if (!all) return null;
+	if (!series) return null;
+
+	let prefData = [];
+	// React.useEffect(() => {
 	for (let i = 0; i < data.result.data[0].data.length; i++) {
 		prefData.push(data.result.data[0].data[i].value);
 	}
-	const prefName = all.result[num].prefName;
+	let prefName = all.result[num].prefName;
 	// const series = [];
-	const serie = {
+	let serie = {
 		name: prefName,
 		data: prefData,
 	};
-	const lists = [...series, serie];
+
+	// const test = () => {
+	// setSeries([...series, serie]);
+	// };
+	// const lists = [...series, serie];
+
+	// const lists = [...series, serie];
+	// setSeries(lists);
+
 	// setSeries([...series, serie]);
 	// series.push(serie);
 
-	const options = {
-		title: {
-			text: "都道府県別人口数",
-		},
-		plotOptions: {
-			series: {
-				label: {
-					connectorAllowed: false,
-				},
-				pointInterval: 5,
-				pointStart: 1960,
-			},
-		},
-		series: series,
-	};
+	// const options = ;
 
 	return (
 		<div className="App">
 			<header className="App-header">
-				<input
-					type="checkbox"
-					onChange={(event) => {
-						setSeries(lists);
-					}}
-				></input>
-				{series.map((data) => {
-					return <p>{data.name}</p>;
-				})}
 				{/* <input
 					type="checkbox"
-					name="test"
 					onChange={(event) => {
 						setSeries(lists);
 					}}
 				></input> */}
-				{/* <p>{series[0].name}</p> */}
+				{series.map((data) => {
+					return <p>{data.name}</p>;
+				})}
 				{all.result.map((prefecture) => {
 					return (
 						<div>
@@ -94,8 +87,23 @@ function App() {
 								value="test"
 								onChange={(event) => {
 									setNum(prefecture.prefCode - 1);
-									// setseriesが呼ばれるときにはdataが更新されてない
-									// setSeries([...series, serie]);
+									// setseriesを呼んでも、更新前にグラフがびょうがされてしまう。
+									// sectSeries([...series, serie]);
+									setOptions({
+										title: {
+											text: "都道府県別人口数",
+										},
+										plotOptions: {
+											series: {
+												label: {
+													connectorAllowed: false,
+												},
+												pointInterval: 5,
+												pointStart: 1960,
+											},
+										},
+										series: [...series, serie],
+									});
 								}}
 							></input>
 							<lebel>{prefecture.prefName}</lebel>
@@ -115,7 +123,7 @@ function App() {
 				{all.result.map((data) => {
 					return <li>{data.prefName}</li>;
 				})} */}
-				<HighchartsReact highcharts={Highcharts} options={options} />
+				<HighchartsReact highcharts={Highcharts} options={{ ...options }} />
 			</header>
 		</div>
 	);
